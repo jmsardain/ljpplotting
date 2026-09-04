@@ -1,0 +1,65 @@
+## Group  SystUp                         nominal     SystDown                      GroupID  Type      Color 
+################################################################################################################
+TRACKING  TRACKING1                      nominal     TRACKING1                     1        ENVELOPE  #d62728
+TRACKING  TRACKING2                      nominal     TRACKING2                     1        ENVELOPE  #d62728
+TRACKING  TRACKING3                      nominal     TRACKING3                     1        ENVELOPE  #d62728
+TRACKING  TRACKING4                      nominal     TRACKING4                     1        ENVELOPE  #d62728
+#
+PURW       PURW_UP                      PURW_OFF     PURW_DOWN                     2        SYMM #8B4000
+#
+MODELING    POWPY                        nominal     POWPY                          5 ENVELOPE  #FFA62B 
+MODELING    SHERPA                       nominal     SHERPA                         5 ENVELOPE  #FFA62B 
+MODELING    HERWIG                       nominal     HERWIG                         5 ENVELOPE  #FFA62B 
+# 
+#TILE       TILE_CORE                    nominal      TILE_CORE                     3        ENVELOPE  #188535
+#TILE       TILE_EDGE                    nominal      TILE_EDGE                     3        ENVELOPE  #188535
+#
+JES JET_EffectiveNP_Detector1__1up                nominal JET_EffectiveNP_Detector1__1down              4 SYMM  #1f77b4
+JES JET_EffectiveNP_Detector2__1up                nominal JET_EffectiveNP_Detector2__1down              4 SYMM  #1f77b4
+JES JET_EffectiveNP_Mixed1__1up                   nominal JET_EffectiveNP_Mixed1__1down                 4 SYMM  #1f77b4
+JES JET_EffectiveNP_Mixed2__1up                   nominal JET_EffectiveNP_Mixed2__1down                 4 SYMM  #1f77b4
+JES JET_EffectiveNP_Mixed3__1up                   nominal JET_EffectiveNP_Mixed3__1down                 4 SYMM  #1f77b4
+JES JET_EffectiveNP_Modelling1__1up               nominal JET_EffectiveNP_Modelling1__1down             4 SYMM  #1f77b4
+JES JET_EffectiveNP_Modelling2__1up               nominal JET_EffectiveNP_Modelling2__1down             4 SYMM  #1f77b4
+JES JET_EffectiveNP_Modelling3__1up               nominal JET_EffectiveNP_Modelling3__1down             4 SYMM  #1f77b4
+JES JET_EffectiveNP_Modelling4__1up               nominal JET_EffectiveNP_Modelling4__1down             4 SYMM  #1f77b4
+JES JET_EffectiveNP_Statistical1__1up             nominal JET_EffectiveNP_Statistical1__1down           4 SYMM  #1f77b4
+JES JET_EffectiveNP_Statistical2__1up             nominal JET_EffectiveNP_Statistical2__1down           4 SYMM  #1f77b4
+JES JET_EffectiveNP_Statistical3__1up             nominal JET_EffectiveNP_Statistical3__1down           4 SYMM  #1f77b4
+JES JET_EffectiveNP_Statistical4__1up             nominal JET_EffectiveNP_Statistical4__1down           4 SYMM  #1f77b4
+JES JET_EffectiveNP_Statistical5__1up             nominal JET_EffectiveNP_Statistical5__1down           4 SYMM  #1f77b4
+JES JET_EffectiveNP_Statistical6__1up             nominal JET_EffectiveNP_Statistical6__1down           4 SYMM  #1f77b4
+JES JET_EtaIntercalibration_Modelling__1up        nominal JET_EtaIntercalibration_Modelling__1down      4 SYMM  #1f77b4
+JES JET_EtaIntercalibration_NonClosure_2018data__1up nominal JET_EtaIntercalibration_NonClosure_2018data__1down 4 SYMM  #1f77b4
+JES JET_EtaIntercalibration_NonClosure_highE__1up nominal JET_EtaIntercalibration_NonClosure_highE__1down 4 SYMM  #1f77b4
+JES JET_EtaIntercalibration_NonClosure_negEta__1up nominal JET_EtaIntercalibration_NonClosure_negEta__1down 4 SYMM  #1f77b4
+JES JET_EtaIntercalibration_NonClosure_posEta__1up nominal JET_EtaIntercalibration_NonClosure_posEta__1down 4 SYMM  #1f77b4
+JES JET_EtaIntercalibration_TotalStat__1up        nominal JET_EtaIntercalibration_TotalStat__1down      4 SYMM  #1f77b4
+JES JET_Flavor_Composition_prop__1up              nominal JET_Flavor_Composition_prop__1down            4 SYMM  #1f77b4
+JES JET_Flavor_Response_prop__1up                 nominal JET_Flavor_Response_prop__1down               4 SYMM  #1f77b4
+JES JET_Flavour_PerJet_GenShower__1up             nominal JET_Flavour_PerJet_GenShower__1down           4 SYMM  #1f77b4
+JES JET_Flavour_PerJet_GenShower_HF__1up          nominal JET_Flavour_PerJet_GenShower_HF__1down        4 SYMM  #1f77b4
+JES JET_Flavour_PerJet_Hadronization__1up         nominal JET_Flavour_PerJet_Hadronization__1down       4 SYMM  #1f77b4
+JES JET_Flavour_PerJet_Hadronization_HF__1up      nominal JET_Flavour_PerJet_Hadronization_HF__1down    4 SYMM  #1f77b4
+JES JET_Flavour_PerJet_Shower__1up                nominal JET_Flavour_PerJet_Shower__1down              4 SYMM  #1f77b4
+JES JET_Flavour_PerJet_Shower_HF__1up             nominal JET_Flavour_PerJet_Shower_HF__1down           4 SYMM  #1f77b4
+#
+JES JET_JER_DataVsMC_MC16__1up                    nominal JET_JER_DataVsMC_MC16__1down                  4 SYMM  #1f77b4
+JES JET_JER_EffectiveNP_10__1up                   nominal JET_JER_EffectiveNP_10__1down                 4 SYMM  #1f77b4
+JES JET_JER_EffectiveNP_11__1up                   nominal JET_JER_EffectiveNP_11__1down                 4 SYMM  #1f77b4
+JES JET_JER_EffectiveNP_1__1up                    nominal JET_JER_EffectiveNP_1__1down                  4 SYMM  #1f77b4
+JES JET_JER_EffectiveNP_12restTerm__1up           nominal JET_JER_EffectiveNP_12restTerm__1down         4 SYMM  #1f77b4
+JES JET_JER_EffectiveNP_2__1up                    nominal JET_JER_EffectiveNP_2__1down                  4 SYMM  #1f77b4
+JES JET_JER_EffectiveNP_3__1up                    nominal JET_JER_EffectiveNP_3__1down                  4 SYMM  #1f77b4
+JES JET_JER_EffectiveNP_4__1up                    nominal JET_JER_EffectiveNP_4__1down                  4 SYMM  #1f77b4
+JES JET_JER_EffectiveNP_5__1up                    nominal JET_JER_EffectiveNP_5__1down                  4 SYMM  #1f77b4
+JES JET_JER_EffectiveNP_6__1up                    nominal JET_JER_EffectiveNP_6__1down                  4 SYMM  #1f77b4
+JES JET_JER_EffectiveNP_7__1up                    nominal JET_JER_EffectiveNP_7__1down                  4 SYMM  #1f77b4
+JES JET_JER_EffectiveNP_8__1up                    nominal JET_JER_EffectiveNP_8__1down                  4 SYMM  #1f77b4
+JES JET_JER_EffectiveNP_9__1up                    nominal JET_JER_EffectiveNP_9__1down                  4 SYMM  #1f77b4
+JES JET_Pileup_OffsetMu__1up                      nominal JET_Pileup_OffsetMu__1down                    4 SYMM  #1f77b4
+JES JET_Pileup_OffsetNPV__1up                     nominal JET_Pileup_OffsetNPV__1down                   4 SYMM  #1f77b4
+JES JET_Pileup_PtTerm__1up                        nominal JET_Pileup_PtTerm__1down                      4 SYMM  #1f77b4
+JES JET_Pileup_RhoTopology__1up                   nominal JET_Pileup_RhoTopology__1down                 4 SYMM  #1f77b4
+JES JET_PunchThrough_MC16__1up                    nominal JET_PunchThrough_MC16__1down                  4 SYMM  #1f77b4
+JES JET_SingleParticle_HighPt__1up                nominal JET_SingleParticle_HighPt__1down              4 SYMM  #1f77b4
