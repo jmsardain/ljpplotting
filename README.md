@@ -26,6 +26,8 @@ This code will create 2 pdf files :
 - `kt_1D_dataMC.pdf` contains 1D histos, ratio to data 
 - `kt_1Derror_dataMC.pdf` contains 1D histos, ratio to data, and relative uncertainties for errors defined in `errorNames.txt` 
 
+Improvement (maybe not necessary) : the code expects the errors from `errorNames.txt`, if error names are not the same, it crashes. This becomes important when looking at the breakdown of each systematic. This is an easy fix. 
+
 ## Relative uncertainty plot for all bins 
 
 under construction ...
