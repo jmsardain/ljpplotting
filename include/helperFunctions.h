@@ -816,5 +816,120 @@ inline void DrawTH1DPlotsWithError(
 }
 
 
+
+
+void DrawTH1DPlots( TH1D* herr_total,
+                    TH1D* herr_tracking,
+                    TH1D* herr_purw,
+                    TH1D* herr_JES,
+                    TH1D* herr_Modeling, 
+                    double ymin, 
+                    double ymax
+                    )
+    {
+
+
+    TCanvas* c = new TCanvas("", "", 4000, 800);
+    TH1D* h_band_err = (TH1D*)herr_total->Clone("h_band");
+    double maxUnc = 0;
+
+    for (int b = 1; b < h_band_err->GetNbinsX()+1; ++b) {
+        double unc = herr_total->GetBinContent(b);
+        h_band_err->SetBinContent(b, 0.0);
+        h_band_err->SetBinError(b, unc);
+        maxUnc = std::max(maxUnc, unc);
+    }
+
+    h_band_err->SetFillColorAlpha(kGray+1, 0.4);
+    h_band_err->SetLineColor(kGray+1);
+
+    TLine *line2 = new TLine(h_band_err->GetBinLowEdge(1),0.0,h_band_err->GetBinLowEdge(h_band_err->GetNbinsX()+1),0.0);
+    line2->SetLineStyle(2); // line at 0
+    line2->SetLineWidth(1); // line at 0
+
+    h_band_err->GetYaxis()->SetNdivisions(505);
+    h_band_err->GetYaxis()->SetTitle("");
+    h_band_err->GetYaxis()->SetTitle("#splitline{Relative}{uncertainty}");
+    h_band_err->GetYaxis()->SetTitleSize(0);
+    line2->Draw("same");
+
+    h_band_err->GetYaxis()->SetRangeUser(-1.2*maxUnc, 1.2*maxUnc);
+    h_band_err->SetMarkerSize(0); 
+    h_band_err->SetMarkerStyle(0); 
+
+    // configurePlot(h_band_err, errorPadHeight);
+    // h_band_err->GetXaxis()->SetRangeUser(150,1200);
+    h_band_err->GetYaxis()->SetRangeUser(ymin, ymax);
+    h_band_err->Draw("HIST E2");
+
+
+    auto [tot_up, tot_down] = makeSymmetric(herr_total, "total");
+    auto [trk_up, trk_down] = makeSymmetric(herr_tracking, "tracking");
+    auto [purw_up, purw_down] = makeSymmetric(herr_purw, "purw");
+    auto [jes_up, jes_down] = makeSymmetric(herr_JES, "jes");
+    auto [modeling_up, modeling_down] = makeSymmetric(herr_Modeling, "modeling");
+
+    trk_up->Draw("hist same");   trk_down->Draw("hist same");
+    purw_up->Draw("hist same");  purw_down->Draw("hist same");
+    jes_up->Draw("hist same");   jes_down->Draw("hist same");
+    modeling_up->Draw("hist same");   modeling_down->Draw("hist same");
+
+    TLegend* leg = new TLegend(0.6, 0.65, 0.88, 0.88);
+    leg->SetBorderSize(0);
+    leg->SetFillStyle(0);
+    leg->SetNColumns(5);
+    leg->AddEntry(h_band_err, "Total", "l");
+    leg->AddEntry(herr_Modeling, "Modeling", "l");
+    leg->AddEntry(herr_purw, "PURW", "l");
+    leg->AddEntry(herr_tracking, "Tracking", "l");
+    leg->AddEntry(herr_JES, "JES", "l");
+    // leg->AddEntry(herr_tile, "TILE", "l");
+    
+    leg->Draw();
+
+    std::vector<std::string> labels;
+    labels.push_back("#sqrt{s} = 13 TeV, 140 fb^{-1}");
+    makeLabels(labels, "Simulation",  0.8, 0.2);
+
+    // put pT delimeter
+    TLatex latex;
+    latex.SetTextAlign(22); 
+    latex.SetTextSize(0.03);
+    std::vector<double> pt_bins = {75,118,183,277,415,657,1034,2011,4256};
+    for (int i = 1; i <= 8; ++i) {
+        TLine* l = new TLine(150 * i, ymin , 150 * i, ymax);
+        l->SetLineColor(kBlack);
+        l->SetLineStyle(3);
+        l->Draw();
+
+        double x_center = 150 * (i - 0.5);
+        // double y_pos = -1.1 * maxUnc;
+        double y_pos = ymin + 0.05 * (ymax - ymin);
+        TString label = Form("%.0f < p_{T} / GeV < %.0f", pt_bins[i-1], pt_bins[i]); 
+        latex.DrawLatex(x_center, y_pos, label);
+    }
+    // put dR delimiters
+    std::vector<double> dr_bins = {0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5};
+    latex.SetTextAngle(90);
+    for (int i = 11; i <= 20; ++i) {
+        TLine* l = new TLine(15 * i, ymin+1, 15 * i,ymax-1);
+        l->SetLineColor(kBlack);
+        l->SetLineStyle(3);
+        l->Draw();
+
+        double x_center = 15 * (i - 0.5);
+        // double y_pos = -0.4 * maxUnc;
+        double y_pos = ymin + 0.05 * (ymax - ymin);
+        int iterator = i-10;
+        TString label = Form("%.1f < ln(R/#Delta R) < %.1f", dr_bins[iterator-1], dr_bins[iterator]); 
+        latex.DrawLatex(x_center, y_pos, label);
+    }
+
+    
+
+
+    c->SaveAs("totalUnc_allBins.pdf");
+}
+
 #endif
 

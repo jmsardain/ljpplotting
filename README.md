@@ -30,4 +30,12 @@ Improvement (maybe not necessary) : the code expects the errors from `errorNames
 
 ## Relative uncertainty plot for all bins 
 
-under construction ...
+This plot is a bit too crowded, but useful to see behavior across all the bins 
+
+``` 
+./drawRelUnc errorNames.txt 
+``` 
+
+This code will create one pdf file : 
+
+- `totalUnc_allBins.pdf` contains the relative uncertainty for all of the errors in `errorNames.txt` 
