@@ -161,6 +161,8 @@ inline TH1D* loadHist(const std::string& path, const std::string& tag, TString h
     std::string fullPath = path + tag + "/4iter/Udata.root";
     if (histName == "UData_TotStat") { 
         fullPath = path + tag + "/4iter/StatUnc.root";
+    } else if (histName == "biasIDS"){
+        fullPath = path + "/4iter/Bias_results.root";
     }
     std::cout << "Loading histogram " << histName << " from: " << path << "/" << tag << std::endl;
     TFile* f = TFile::Open(fullPath.c_str());
@@ -388,6 +390,7 @@ inline std::pair<TH1D*, TH1D*> makeSymmetric(TH1D*h, TString type){
     if (type == "purw")    {  color = "#8B4000"; linestyle = 3;  }
     if (type == "modeling"){  color = "#FFA62B"; linestyle = 4;  }
     if (type == "jes")     {  color = "#1f77b4"; linestyle = 5;  }
+    if (type == "unfold")     {  color = "#008000"; linestyle = 5;  }
     
     h_up->SetLineColor(TColor::GetColor(color));
     h_down->SetLineColor(TColor::GetColor(color));
@@ -582,7 +585,8 @@ inline void DrawTH1DPlotsWithError(
     const std::vector<std::vector<TH1D*>>& kt_tracking,
     const std::vector<std::vector<TH1D*>>& kt_purw,
     const std::vector<std::vector<TH1D*>>& kt_JES,
-    const std::vector<std::vector<TH1D*>>& kt_Modeling
+    const std::vector<std::vector<TH1D*>>& kt_Modeling,
+    const std::vector<std::vector<TH1D*>>& kt_unfold
     )
 {
     int NpT = kt_pythia.size();
@@ -617,7 +621,8 @@ inline void DrawTH1DPlotsWithError(
             TGraphAsymmErrors* g_purw     = TH1DtoTGraphAsymmErrors(kt_purw[ipt][idr]);
             TGraphAsymmErrors* g_modeling = TH1DtoTGraphAsymmErrors(kt_Modeling[ipt][idr]);
             TGraphAsymmErrors* g_jes      = TH1DtoTGraphAsymmErrors(kt_JES[ipt][idr]);
-            
+            TGraphAsymmErrors* g_unfold   = TH1DtoTGraphAsymmErrors(kt_unfold[ipt][idr]);
+
             // auto [g_total_up, g_total_down]       = makeSymmetric(g_total, "#cccccc");
             // auto [g_tracking_up, g_tracking_down] = makeSymmetric(g_tracking, "#d62728");
             // auto [g_purw_up, g_purw_down]         = makeSymmetric(g_purw, "#8B4000");
@@ -629,6 +634,7 @@ inline void DrawTH1DPlotsWithError(
             auto [g_purw_up, g_purw_down]         = makeSymmetric(kt_purw[ipt][idr], "purw");
             auto [g_modeling_up, g_modeling_down] = makeSymmetric(kt_Modeling[ipt][idr], "modeling");
             auto [g_jes_up, g_jes_down]           = makeSymmetric(kt_JES[ipt][idr], "jes");
+            auto [g_unfold_up, g_unfold_down]     = makeSymmetric(kt_unfold[ipt][idr], "unfold");
 
             // if (ipt ==1 && idr ==1 ) 
             //     std::cout << " data  " << g_data->GetN() 
@@ -791,10 +797,10 @@ inline void DrawTH1DPlotsWithError(
             // h_band_err->SetMarkerStyle(0); 
 
     
-            std::vector<TH1D*> systUp = {g_total_up, g_tracking_up, g_purw_up, g_jes_up, g_modeling_up};
-            std::vector<std::string> errNames = {"Total Syst.", "Tracking", "PURW", "JES+JER", "MC Model"};
+            std::vector<TH1D*> systUp = {g_total_up, g_tracking_up, g_purw_up, g_jes_up, g_modeling_up, g_unfold_up};
+            std::vector<std::string> errNames = {"Total Syst.", "Tracking", "PURW", "JES+JER", "MC Model", "Unfold"};
 
-            TLegend*legError =  makeLegends(systUp, errNames, 0.4, 0.18, 0.92, 0.6, 5);
+            TLegend*legError =  makeLegends(systUp, errNames, 0.4, 0.18, 0.92, 0.6, 6);
 
             g_total_up->SetMinimum(-2);
             g_total_up->SetMaximum(2);
@@ -804,6 +810,7 @@ inline void DrawTH1DPlotsWithError(
             g_purw_up->Draw("HIST SAME"); g_purw_down->Draw("HIST SAME");
             g_modeling_up->Draw("HIST SAME"); g_modeling_down->Draw("HIST SAME");
             g_jes_up->Draw("HIST SAME"); g_jes_down->Draw("HIST SAME");
+            g_unfold_up->Draw("HIST SAME"); g_unfold_down->Draw("HIST SAME");
             legError->Draw("SAME");
 
 
