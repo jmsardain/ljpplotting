@@ -10,3 +10,5 @@ echo $COMPILER $FLAGS
 
 $COMPILER $FLAGS -g -O3 -Wall -Wextra -Wpedantic -fopenmp ./draw1DHistos.cc  -Iinclude -o draw1DHistos
 $COMPILER $FLAGS -g -O3 -Wall -Wextra -Wpedantic -fopenmp ./drawRelUnc.cc  -Iinclude -o drawRelUnc
+$COMPILER $FLAGS -g -O3 -Wall -Wextra -Wpedantic -fopenmp ./final1DHistos.cc  -Iinclude -o final1DHistos
+$COMPILER $FLAGS -g -O3 -Wall -Wextra -Wpedantic -fopenmp ./finalRelUnc.cc  -Iinclude -o finalRelUnc
