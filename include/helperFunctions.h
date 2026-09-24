@@ -830,6 +830,7 @@ void DrawTH1DPlots( TH1D* herr_total,
                     TH1D* herr_purw,
                     TH1D* herr_JES,
                     TH1D* herr_Modeling, 
+                    TH1D* hunfold,
                     double ymin, 
                     double ymax
                     )
@@ -875,11 +876,13 @@ void DrawTH1DPlots( TH1D* herr_total,
     auto [purw_up, purw_down] = makeSymmetric(herr_purw, "purw");
     auto [jes_up, jes_down] = makeSymmetric(herr_JES, "jes");
     auto [modeling_up, modeling_down] = makeSymmetric(herr_Modeling, "modeling");
+    auto [unfold_up, unfold_down] = makeSymmetric(hunfold, "unfold");
 
     trk_up->Draw("hist same");   trk_down->Draw("hist same");
     purw_up->Draw("hist same");  purw_down->Draw("hist same");
     jes_up->Draw("hist same");   jes_down->Draw("hist same");
     modeling_up->Draw("hist same");   modeling_down->Draw("hist same");
+    unfold_up->Draw("hist same");   unfold_down->Draw("hist same");
 
     TLegend* leg = new TLegend(0.6, 0.65, 0.88, 0.88);
     leg->SetBorderSize(0);
@@ -890,6 +893,7 @@ void DrawTH1DPlots( TH1D* herr_total,
     leg->AddEntry(herr_purw, "PURW", "l");
     leg->AddEntry(herr_tracking, "Tracking", "l");
     leg->AddEntry(herr_JES, "JES", "l");
+    leg->AddEntry(hunfold, "Unfold", "l");
     // leg->AddEntry(herr_tile, "TILE", "l");
     
     leg->Draw();
