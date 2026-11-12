@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# setupATLAS
-# lsetup "root 6.36.02-x86_64-el9-gcc14-opt"
+# setupATLAS && lsetup "root 6.36.02-x86_64-el9-gcc14-opt"
 
 COMPILER=$(root-config --cxx)
 FLAGS=$(root-config --cflags --libs)
 echo $COMPILER $FLAGS
 
 
-$COMPILER $FLAGS -g -O3 -Wall -Wextra -Wpedantic -fopenmp ./draw1DHistos.cc  -Iinclude -o draw1DHistos
-$COMPILER $FLAGS -g -O3 -Wall -Wextra -Wpedantic -fopenmp ./drawRelUnc.cc  -Iinclude -o drawRelUnc
+# $COMPILER $FLAGS -g -O3 -Wall -Wextra -Wpedantic -fopenmp ./draw1DHistos.cc  -Iinclude -o draw1DHistos
+# $COMPILER $FLAGS -g -O3 -Wall -Wextra -Wpedantic -fopenmp ./drawRelUnc.cc  -Iinclude -o drawRelUnc
 $COMPILER $FLAGS -g -O3 -Wall -Wextra -Wpedantic -fopenmp ./final1DHistos.cc  -Iinclude -o final1DHistos
-$COMPILER $FLAGS -g -O3 -Wall -Wextra -Wpedantic -fopenmp ./finalRelUnc.cc  -Iinclude -o finalRelUnc
+# $COMPILER $FLAGS -g -O3 -Wall -Wextra -Wpedantic -fopenmp ./finalRelUnc.cc  -Iinclude -o finalRelUnc
+$COMPILER $FLAGS -g -O3 -Wall -Wextra -Wpedantic -fopenmp ./plot_LJP_2D.cpp -Iinclude -o plot_LJP_2D
