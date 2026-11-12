@@ -5,7 +5,7 @@
 #include "TStyle.h"
 // #include "include/helperFunctionsFinal.h"
 
-std::map<TString, TH2D*>  plot_LJP_2D(TString MCSample, TH1D* h1 ) {
+std::map<TString, TH2D*>  plot_LJP_2D(TString primaryOrSecondary, TString MCSample, TH1D* h1 ) {
     
     
 
@@ -19,7 +19,10 @@ std::map<TString, TH2D*>  plot_LJP_2D(TString MCSample, TH1D* h1 ) {
     gSystem->mkdir(outputDirLJP, true);
 
     // Define binning
-    std::vector<double> bins_kT = {-10, -3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 10};
+    std::vector<double> bins_kT = {-10, -3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 10.};
+    if(primaryOrSecondary == "Secondary") {
+        bins_kT = {-10, -3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 6.0};
+    }
     std::vector<double> bins_dR;
     for (double r = 0; r <= 5.0; r += 0.5) bins_dR.push_back(r);
     std::vector<double> bins_pT = {75, 118, 183, 277, 415, 657, 1034, 2011, 4256};
@@ -34,10 +37,11 @@ std::map<TString, TH2D*>  plot_LJP_2D(TString MCSample, TH1D* h1 ) {
     TString outputFileLJP = Form("%sLundSlice%s_pTbins", outputDirLJP.Data(), MCSample.Data());
     TString outputFileStat = Form("%sLundSlice%s_pTbins", outputDirStat.Data(), MCSample.Data());
 
-    cLJP->SaveAs(outputFileLJP+".pdf[");
-    cStat->SaveAs(outputFileStat+".pdf[");
+    cLJP->SaveAs(outputFileLJP+"_"+primaryOrSecondary+".pdf[");
+    // cStat->SaveAs(outputFileStat+".pdf[");
     // Loop over pT bins
     for (int ipt = 0; ipt < nBins_pT; ++ipt) {
+        TCanvas* cTemp = new TCanvas(Form("c_pt%d", ipt), "", 1200, 1200);
         TString nameStat = Form("Stat_kTvsDeltaR_pTbin%d", ipt);
         TString nameLJP = Form("Lund_kTvsDeltaR_pTbin%d", ipt);
 
@@ -79,16 +83,20 @@ std::map<TString, TH2D*>  plot_LJP_2D(TString MCSample, TH1D* h1 ) {
 
 
 
-        Draw2DLund(cStat, hStat, outputFileStat, ipt, title, "Statistical Uncertainties");
-        Draw2DLund(cLJP, hLJP, outputFileLJP, ipt, title, "Primary Lund Jet Plane");
+        // Draw2DLund(cStat, hStat, outputFileStat, ipt, title, "Statistical Uncertainties");
+        Draw2DLund(cLJP, hLJP, outputFileLJP+"_"+primaryOrSecondary, ipt, title, primaryOrSecondary + " Lund Jet Plane");
+        // Draw2DLund(cTemp, hLJP, outputFileLJP, ipt, title, primaryOrSecondary + " Lund Jet Plane");
+        // cTemp->SaveAs(Form("%sLundSlice%s_pTbin%d.png", outputFileLJP.Data(), MCSample.Data(), ipt));
+
 
         TString key = Form("%s_pTbin%d", MCSample.Data(), ipt);
         hLJP_map[key] = hLJP;
         delete hStat;
         // delete hLJP;
+
     }
-    cLJP->SaveAs(outputFileLJP+".pdf]");
-    cStat->SaveAs(outputFileStat+".pdf]");
+    cLJP->SaveAs(outputFileLJP+"_"+primaryOrSecondary+".pdf]");
+    // cStat->SaveAs(outputFileStat+".pdf]");
     return hLJP_map;
 
 }
@@ -151,36 +159,49 @@ int main(int argc, char* argv[]){
     gStyle->SetPadTickX(1);
     gStyle->SetPadTickY(1);
 
+
     gStyle->SetTitleSize(0.04, "XY");
     gStyle->SetLabelSize(0.04, "XY");
 
     gStyle->SetEndErrorSize(0); 
 
-    // std::string mcSample(argv[1]);
-    // TString MCSample = TString(mcSample); 
+    std::string primaryOrSecondary(argv[1]);
+    TString PrimaryOrSecondary = TString(primaryOrSecondary); 
 
 
-    TH1D* h_pythia = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_PrimaryLJP_2026/", "nominal", "UData");
-    TH1D* h_powheg = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_PrimaryLJP_2026/", "POWPY", "UData");
-    TH1D* h_sherpa = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_PrimaryLJP_2026/", "SHERPA", "UData");
-    TH1D* h_herwig = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_PrimaryLJP_2026/", "HERWIG", "UData");
-    TH1D* h_data   = loadHist("/data/ldelagra/LundPlane/Unfolding/nominal_PrimaryLJP/", "Final_Files_16-03-2026", "UData_TotStat");
-    TH1D* h_unfold = loadHist("/data/ldelagra/LundPlane/Unfolding/nominal_PrimaryLJP/Final_Files_16-03-2026/BiasIDS/", "", "biasIDS");
+    TString PowPyName = "POWPY"; 
+    TString SHERPAName = "SHERPA"; 
+    TString HerwigName = "HERWIG";
+    if (PrimaryOrSecondary == "Secondary") {
+        PowPyName = "Powpy"; 
+        SHERPAName = "Sherpa";
+        HerwigName = "Herwig";
+    }
     
-    
-    std::map<TString, TH2D*> hLJP_pythia = plot_LJP_2D("Pythia", h_pythia);
-    std::map<TString, TH2D*> hLJP_powheg = plot_LJP_2D("POWPY", h_powheg); 
-    std::map<TString, TH2D*> hLJP_sherpa = plot_LJP_2D("SHERPA", h_sherpa);
-    std::map<TString, TH2D*> hLJP_herwig = plot_LJP_2D("HERWIG", h_herwig);
-    std::map<TString, TH2D*> hLJP_data   = plot_LJP_2D("Data", h_data);
-    std::map<TString, TH2D*> hLJP_unfold = plot_LJP_2D("UNFOLD", h_unfold);
+    std::string powpyName = PowPyName.Data();
+    std::string sherpaName = SHERPAName.Data();
+    std::string herwigName = HerwigName.Data();
+    TH1D* h_pythia = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_" + primaryOrSecondary + "LJP/", "nominal", "UData");
+    TH1D* h_powheg = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_" + primaryOrSecondary + "LJP/", powpyName, "UData");
+    TH1D* h_sherpa = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_" + primaryOrSecondary + "LJP/", sherpaName, "UData");
+    TH1D* h_herwig = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_" + primaryOrSecondary + "LJP/", herwigName, "UData");
+    // TH1D* h_data   = loadHist("/data/ldelagra/LundPlane/Unfolding/nominal_" + PrimaryOrSecondary + "LJP/", "Final_Files_16-03-2026", "UData_TotStat");
+    // TH1D* h_unfold = loadHist("/data/ldelagra/LundPlane/Unfolding/nominal_" + PrimaryOrSecondary + "LJP/Final_Files_16-03-2026/BiasIDS/", "", "biasIDS");
 
-    std::map<TString, TH2D*> ratio_pythia_sherpa = make_ratio_map(hLJP_pythia, hLJP_sherpa, "SHERPA",  "Pythia_Sherpa");
-    std::map<TString, TH2D*> ratio_pythia_powheg = make_ratio_map(hLJP_pythia, hLJP_powheg, "POWPY", "Pythia_Powheg");
-    std::map<TString, TH2D*> ratio_pythia_herwig = make_ratio_map(hLJP_pythia, hLJP_herwig, "HERWIG", "Pythia_Herwig");
+
+    std::map<TString, TH2D*> hLJP_pythia = plot_LJP_2D(PrimaryOrSecondary, "Pythia", h_pythia);
+    // std::map<TString, TH2D*> hLJP_powheg = plot_LJP_2D(PrimaryOrSecondary, powpyName, h_powheg); 
+    // std::map<TString, TH2D*> hLJP_sherpa = plot_LJP_2D(PrimaryOrSecondary, sherpaName, h_sherpa);
+    // std::map<TString, TH2D*> hLJP_herwig = plot_LJP_2D(PrimaryOrSecondary, herwigName, h_herwig);
+    // // std::map<TString, TH2D*> hLJP_data   = plot_LJP_2D(PrimaryOrSecondary, "Data", h_data);
+    // std::map<TString, TH2D*> hLJP_unfold = plot_LJP_2D(PrimaryOrSecondary, "UNFOLD", h_unfold);
+
+    // std::map<TString, TH2D*> ratio_pythia_sherpa = make_ratio_map(hLJP_pythia, hLJP_sherpa, "SHERPA",  "Pythia_Sherpa");
+    // std::map<TString, TH2D*> ratio_pythia_powheg = make_ratio_map(hLJP_pythia, hLJP_powheg, "POWPY", "Pythia_Powheg");
+    // std::map<TString, TH2D*> ratio_pythia_herwig = make_ratio_map(hLJP_pythia, hLJP_herwig, "HERWIG", "Pythia_Herwig");
     
-    save_ratio_maps( ratio_pythia_sherpa, "/home/jmsardain/LJP/myplotting/2DPlots/Ratios/Pythia_Sherpa/", "Pythia / Sherpa", "Sherpa");
-    save_ratio_maps( ratio_pythia_powheg, "/home/jmsardain/LJP/myplotting/2DPlots/Ratios/Pythia_Powheg/", "Pythia / POWPY", "POWPY");
-    save_ratio_maps( ratio_pythia_herwig, "/home/jmsardain/LJP/myplotting/2DPlots/Ratios/Pythia_Herwig/", "Pythia / HERWIG", "HERWIG");
+    // save_ratio_maps( ratio_pythia_sherpa, "/home/jmsardain/LJP/myplotting/2DPlots/Ratios/Pythia_Sherpa/", "Pythia / Sherpa", "Sherpa");
+    // save_ratio_maps( ratio_pythia_powheg, "/home/jmsardain/LJP/myplotting/2DPlots/Ratios/Pythia_Powheg/", "Pythia / POWPY", "POWPY");
+    // save_ratio_maps( ratio_pythia_herwig, "/home/jmsardain/LJP/myplotting/2DPlots/Ratios/Pythia_Herwig/", "Pythia / HERWIG", "HERWIG");
     return 0;
 }
