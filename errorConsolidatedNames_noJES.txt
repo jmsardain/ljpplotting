@@ -1,0 +1,16 @@
+## Group  SystUp                         nominal     SystDown                      GroupID  Type      Color 
+################################################################################################################
+EXPERIMENTAL  TRACKING1                      nominal     TRACKING1                     1        ENVELOPE  #d62728
+EXPERIMENTAL  TRACKING2                      nominal     TRACKING2                     1        ENVELOPE  #d62728
+EXPERIMENTAL  TRACKING3                      nominal     TRACKING3                     1        ENVELOPE  #d62728
+EXPERIMENTAL  TRACKING4                      nominal     TRACKING4                     1        ENVELOPE  #d62728
+#
+EXPERIMENTAL       PURW_UP                      PURW_OFF     PURW_DOWN                     2        SYMM #8B4000
+#
+MODELING    Powpy                        nominal     Powpy                          5 ENVELOPE  #FFA62B 
+MODELING    Sherpa                       nominal     Sherpa                         5 ENVELOPE  #FFA62B 
+MODELING    Herwig                       nominal     Herwig                         5 ENVELOPE  #FFA62B 
+# 
+#TILE       TILE_CORE                    nominal      TILE_CORE                     3        ENVELOPE  #188535
+#TILE       TILE_EDGE                    nominal      TILE_EDGE                     3        ENVELOPE  #188535
+#
