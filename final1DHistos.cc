@@ -36,6 +36,9 @@ int main(int argc, char* argv[]){
     std::ifstream infile(errFileName);
     std::string line;
 
+    std::string primaryOrSecondary(argv[2]);
+    TString PrimaryOrSecondary = TString(primaryOrSecondary); 
+
     std::vector<SystEntry> entries;
     while (std::getline(infile, line)) {
 
@@ -48,22 +51,33 @@ int main(int argc, char* argv[]){
         entries.push_back(e);
     }
 
-    TH1D* h_pythia = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_PrimaryLJP_2026/", "nominal", "UData");
-    TH1D* h_powheg = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_PrimaryLJP_2026/", "POWPY", "UData");
-    TH1D* h_sherpa = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_PrimaryLJP_2026/", "SHERPA", "UData");
-    TH1D* h_herwig = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_PrimaryLJP_2026/", "HERWIG", "UData");
-    TH1D* h_data   = loadHist("/data/ldelagra/LundPlane/Unfolding/nominal_PrimaryLJP/", "Final_Files_16-03-2026", "UData_TotStat");
-    TH1D* h_unfold = loadHist("/data/ldelagra/LundPlane/Unfolding/nominal_PrimaryLJP/Final_Files_16-03-2026/BiasIDS/", "", "biasIDS");
-    // applyStatUncertainty(h_data, "/data/ldelagra/LundPlane/Unfolding/nominal_PrimaryLJP/", "Final_Files_16-03-2026"); // fonction obselete
+    TString PowPyName = "POWPY"; 
+    TString SHERPAName = "SHERPA";
+    TString HerwigName = "HERWIG";
+    if (PrimaryOrSecondary == "Secondary") {
+        PowPyName = "Powpy"; 
+        SHERPAName = "Sherpa";
+        HerwigName = "Herwig";
+    }
+    std::string powpyName = PowPyName.Data();
+    std::string sherpaName = SHERPAName.Data();
+    std::string herwigName = HerwigName.Data();
+    TH1D* h_pythia = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_" + primaryOrSecondary + "LJP/", "nominal", "UData");
+    TH1D* h_powheg = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_" + primaryOrSecondary + "LJP/", powpyName, "UData");
+    TH1D* h_sherpa = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_" + primaryOrSecondary + "LJP/", sherpaName, "UData");
+    TH1D* h_herwig = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_" + primaryOrSecondary + "LJP/", herwigName, "UData");
+    TH1D* h_data   = loadHist("/data/ldelagra/LundPlane/Unfolding/nominal_" + primaryOrSecondary + "LJP/", "", "UData");
+    TH1D* h_unfold = loadHist("/data/ldelagra/LundPlane/Unfolding/nominal_" + primaryOrSecondary + "LJP/", "", "UData");
+    // applyStatUncertainty(h_data, "/data/ldelagra/LundPlane/Unfolding/nominal_SecondaryLJP/", "Final_Files_16-03-2026"); // fonction obselete
 
-    auto kt_pythia = extract_kT_distributions(h_pythia, "nominal");
-    auto kt_powheg = extract_kT_distributions(h_powheg, "POWPY");
-    auto kt_sherpa = extract_kT_distributions(h_sherpa, "SHERPA");
-    auto kt_herwig = extract_kT_distributions(h_herwig, "HERWIG");
-    auto kt_data   = extract_kT_distributions(h_data, "DATA");
+    auto kt_pythia = extract_kT_distributions(h_pythia, "nominal", PrimaryOrSecondary);
+    auto kt_powheg = extract_kT_distributions(h_powheg, powpyName, PrimaryOrSecondary);
+    auto kt_sherpa = extract_kT_distributions(h_sherpa, sherpaName, PrimaryOrSecondary);
+    auto kt_herwig = extract_kT_distributions(h_herwig, herwigName, PrimaryOrSecondary);
+    auto kt_data   = extract_kT_distributions(h_data, "DATA", PrimaryOrSecondary);
 
     // draw 1D histos (2 pads, top: true, middle: mc/data)
-    // DrawTH1DPlots(kt_data, kt_pythia, kt_powheg, kt_sherpa, kt_herwig);
+    // DrawTH1DPlots(kt_data, kt_pythia, kt_powheg, kt_sherpa, kt_herwig, PrimaryOrSecondary);
 
     // draw 1D histos (3 pads, top: true, middle: mc/data, bottom: rel. unc.)
     std::map<std::string, TH1D*> groupAccum;
@@ -71,9 +85,9 @@ int main(int argc, char* argv[]){
     for (auto& e : entries) {
 
         // std::cout << "au moins je suis ici .. "<< std::endl;
-        TH1D* h_nom  = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_PrimaryLJP_2026/", e.nominal, "UData");
-        TH1D* h_up   = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_PrimaryLJP_2026/", e.up, "UData");
-        TH1D* h_down = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_PrimaryLJP_2026/", e.down, "UData");
+        TH1D* h_nom  = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_SecondaryLJP/", e.nominal, "UData");
+        TH1D* h_up   = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_SecondaryLJP/", e.up, "UData");
+        TH1D* h_down = loadHist("/data/ldelagra/LundPlane/Unfolding/syst_SecondaryLJP/", e.down, "UData");
         // get the relative uncertainty 
         TH1D* h_rel = computeRel(h_nom, h_up, h_down, e.type);
 
@@ -123,14 +137,14 @@ int main(int argc, char* argv[]){
     }
 
     // these are already rel uncertainties, not 1D distributions from the ROOT files
-    auto kt_exp     = extract_kT_distributions(groupAccum["EXPERIMENTAL"], "exp");
-    // auto kt_tracking = extract_kT_distributions(groupAccum["TRACKING"], "tracking");
-    // auto kt_JES      = extract_kT_distributions(groupAccum["JES"], "JES");
-    auto kt_Modeling = extract_kT_distributions(groupAccum["MODELING"], "modeling");
-    auto kt_total    = extract_kT_distributions(h_total, "total");
-    auto kt_unfold   = extract_kT_distributions(h_unfold, "biasIDS");
+    auto kt_exp     = extract_kT_distributions(groupAccum["EXPERIMENTAL"], "exp", primaryOrSecondary);
+    // auto kt_tracking = extract_kT_distributions(groupAccum["TRACKING"], "tracking", primaryOrSecondary);
+    // auto kt_JES      = extract_kT_distributions(groupAccum["JES"], "JES", primaryOrSecondary);
+    auto kt_Modeling = extract_kT_distributions(groupAccum["MODELING"], "modeling", primaryOrSecondary);
+    auto kt_total    = extract_kT_distributions(h_total, "total", primaryOrSecondary);
+    auto kt_unfold   = extract_kT_distributions(h_unfold, "biasIDS", primaryOrSecondary);
 
-    DrawTH1DPlotsWithError( kt_data, kt_pythia, kt_powheg, kt_sherpa, kt_herwig, kt_total, kt_exp, kt_Modeling, kt_unfold);
+    DrawTH1DPlotsWithError( kt_data, kt_pythia, kt_powheg, kt_sherpa, kt_herwig, kt_total, kt_exp, kt_Modeling, kt_unfold, primaryOrSecondary);
     
 
 
