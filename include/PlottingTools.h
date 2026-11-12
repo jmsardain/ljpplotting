@@ -600,7 +600,7 @@ void Draw2DLund(TCanvas*can, TH2D* h, TString outputDir, int ptBinIndex, TString
     tex->DrawLatex(0.22, ypos -= 0.04, hLabel);
     tex->DrawLatex(0.22, ypos -= 0.04, ptLabel);
 
-    std::cout << "Saving " << outputDir << ".pdf" << std::endl;
+    std::cout << "Saving " << outputDir << ".png" << std::endl;
 
     can->SaveAs(outputDir + ".pdf");
     // can->SaveAs(outputDir + ".root");

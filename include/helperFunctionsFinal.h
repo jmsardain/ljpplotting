@@ -216,9 +216,12 @@ inline TH1D* computeRel(TH1D* h_nom, TH1D* h_up, TH1D* h_down, const std::string
     return h_rel;
 }
 
-inline std::vector<std::vector<TH1D*>> extract_kT_distributions(TH1D* h_global, TString type = "nominal") {
+inline std::vector<std::vector<TH1D*>> extract_kT_distributions(TH1D* h_global, TString type = "nominal", TString primaryOrSecondary = "Primary") {
 
     std::vector<double> kT_bins = {-10,-3,-2.5,-2,-1.5,-1,-0.5,0,0.5,1,1.5,2,2.5,3,4.0,10.};
+    if(primaryOrSecondary == "Secondary") {
+        kT_bins = {-10,-3,-2.5,-2,-1.5,-1,-0.5,0,0.5,1,1.5,2,2.5,3,4.0,6.0};
+    }
 
     std::vector<double> pt_bins = {75,118,183,277,415,657,1034,2011,4256};
     std::vector<double> dr_bins = {0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5};
@@ -417,7 +420,8 @@ inline void DrawTH1DPlots(
     const std::vector<std::vector<TH1D*>>& kt_pythia,
     const std::vector<std::vector<TH1D*>>& kt_powheg,
     const std::vector<std::vector<TH1D*>>& kt_sherpa,
-    const std::vector<std::vector<TH1D*>>& kt_herwig
+    const std::vector<std::vector<TH1D*>>& kt_herwig,
+    TString primaryOrSecondary = "Primary"
 )
 {
 
@@ -427,6 +431,9 @@ inline void DrawTH1DPlots(
 
 
     std::vector<double> kT_bins = {-10,-3,-2.5,-2,-1.5,-1,-0.5,0,0.5,1,1.5,2,2.5,3,4.0,10.};
+    if (primaryOrSecondary == "Secondary") {
+        kT_bins = {-10,-3,-2.5,-2,-1.5,-1,-0.5,0,0.5,1,1.5,2,2.5,3,4.0,6.0};
+    }
     std::vector<double> pt_bins = {75,118,183,277,415,657,1034,2011,4256};
     std::vector<double> dr_bins = {0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5};
 
@@ -504,8 +511,8 @@ inline void DrawTH1DPlots(
             g_data->GetYaxis()->SetTitle("#frac{1}{#sigma} #frac{d#sigma}{dln(k_{T})}");
             g_data->GetXaxis()->SetTitle("ln(k_{T} / GeV)");
             g_data->GetXaxis()->SetLimits(-10, 10);
-            // g_data->SetMinimum(1e-4);   
-            // g_data->SetMaximum(0.3);     
+            g_data->SetMinimum(1e-4);   
+            g_data->SetMaximum(0.3);     
             double errorPadHeight = ratioHeight + 0.1;
             configurePlot(g_data, errorPadHeight);
 
@@ -582,13 +589,17 @@ inline void DrawTH1DPlotsWithError(
     const std::vector<std::vector<TH1D*>>& kt_total,
     const std::vector<std::vector<TH1D*>>& kt_exp,
     const std::vector<std::vector<TH1D*>>& kt_Modeling,
-    const std::vector<std::vector<TH1D*>>& kt_unfold
+    const std::vector<std::vector<TH1D*>>& kt_unfold,
+    TString primaryOrSecondary = "Primary"
     )
 {
     int NpT = kt_pythia.size();
     int NdeltaR = kt_pythia[0].size();
 
     std::vector<double> kT_bins = {-10,-3,-2.5,-2,-1.5,-1,-0.5,0,0.5,1,1.5,2,2.5,3,4.0,10.};
+    if(primaryOrSecondary == "Secondary") {
+        kT_bins = {-10,-3,-2.5,-2,-1.5,-1,-0.5,0,0.5,1,1.5,2,2.5,3,4.0,6.0};
+    }
     std::vector<double> dr_bins = {0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5};
     std::vector<double> pt_bins = {75,118,183,277,415,657,1034,2011,4256};
 
@@ -600,7 +611,7 @@ inline void DrawTH1DPlotsWithError(
     double ratioHeight = 0.3;
 
     TCanvas* c = new TCanvas("c_summary", "kT Summary", 800, 800);
-    c->SaveAs("kt_1Derror_dataMC_clean.pdf[");
+    c->SaveAs("kt_1Derror_dataMC_clean_" + primaryOrSecondary + ".pdf[");
 
     for (int ipt = 1; ipt < NpT; ++ipt) {
         for (int idr = 0; idr < NdeltaR; ++idr) {
@@ -701,9 +712,15 @@ inline void DrawTH1DPlotsWithError(
 
             g_data->GetYaxis()->SetTitle("#frac{1}{#sigma} #frac{d#sigma}{dln(k_{T})}");
             g_data->GetXaxis()->SetTitle("ln(k_{T} / GeV)");
-            g_data->GetXaxis()->SetLimits(-10, 10);
-            g_data->SetMinimum(1e-100);   
-            g_data->SetMaximum(1);     
+
+            float xmax = 10; 
+            if(primaryOrSecondary == "Secondary") {
+                xmax = 6; 
+            }
+            
+            g_data->GetXaxis()->SetLimits(-10, xmax);
+            // g_data->SetMinimum(1e-100);   
+            g_data->SetMaximum(5);     
             double errorPadHeight = ratioHeight + 0.1;
             configurePlot(g_data, errorPadHeight);
             g_data->Draw("AP");
@@ -742,7 +759,8 @@ inline void DrawTH1DPlotsWithError(
             g_band->SetLineColor(TColor::GetColor("#cccccc"));
             g_band->SetMarkerSize(0);
 
-            g_band->GetXaxis()->SetLimits(-10, 10);
+        
+            g_band->GetXaxis()->SetLimits(-10, xmax);
             g_band->GetYaxis()->SetTitle("#splitline{Ratio to}{Data}");
             g_band->GetYaxis()->SetRangeUser(0., 2.);
             g_band->GetYaxis()->SetNdivisions(505);
@@ -755,7 +773,8 @@ inline void DrawTH1DPlotsWithError(
             g_ratio_sherpa->Draw("P SAME");
             g_ratio_herwig->Draw("P SAME");
 
-            TLine* line = new TLine(-10, 1, 10, 1);
+            
+            TLine* line = new TLine(-10, 1, xmax, 1);
             line->SetLineStyle(2);
             line->Draw();
 
@@ -805,12 +824,12 @@ inline void DrawTH1DPlotsWithError(
             legError->Draw("SAME");
 
 
-            c1->SaveAs("kt_1Derror_dataMC_clean.pdf");
+            c1->SaveAs("kt_1Derror_dataMC_clean_" + primaryOrSecondary + ".pdf");
             delete c1;
         }
     }
 
-    c->SaveAs("kt_1Derror_dataMC_clean.pdf]");
+    c->SaveAs("kt_1Derror_dataMC_clean_" + primaryOrSecondary + ".pdf]");
 }
 
 
@@ -826,7 +845,7 @@ void DrawTH1DPlots( TH1D* herr_total,
     {
 
 
-    TCanvas* c = new TCanvas("", "", 4000, 800);
+    TCanvas* c = new TCanvas("", "", 2400, 800);
     TH1D* h_band_err = (TH1D*)herr_total->Clone("h_band");
     double maxUnc = 0;
 
@@ -847,7 +866,7 @@ void DrawTH1DPlots( TH1D* herr_total,
     h_band_err->GetYaxis()->SetNdivisions(505);
     h_band_err->GetYaxis()->SetTitle("");
     h_band_err->GetYaxis()->SetTitle("#splitline{Relative}{uncertainty}");
-    h_band_err->GetYaxis()->SetTitleSize(0);
+    // h_band_err->GetYaxis()->SetTitleSize(0);
     line2->Draw("same");
 
     h_band_err->GetYaxis()->SetRangeUser(-1.2*maxUnc, 1.2*maxUnc);
@@ -855,7 +874,7 @@ void DrawTH1DPlots( TH1D* herr_total,
     h_band_err->SetMarkerStyle(0); 
 
     // configurePlot(h_band_err, errorPadHeight);
-    // h_band_err->GetXaxis()->SetRangeUser(150,1200);
+    h_band_err->GetXaxis()->SetRangeUser(150,1200);
     h_band_err->GetYaxis()->SetRangeUser(ymin, ymax);
     h_band_err->Draw("HIST E2");
 
@@ -865,6 +884,8 @@ void DrawTH1DPlots( TH1D* herr_total,
     auto [modeling_up, modeling_down] = makeSymmetric(herr_Modeling, "modeling");
     auto [unfold_up, unfold_down] = makeSymmetric(hunfold, "unfold");
 
+    hunfold->SetLineColor(TColor::GetColor("#008000"));
+    
     exp_up->Draw("hist same");   exp_down->Draw("hist same");
     modeling_up->Draw("hist same");   modeling_down->Draw("hist same");
     unfold_up->Draw("hist same");   unfold_down->Draw("hist same");
@@ -892,7 +913,7 @@ void DrawTH1DPlots( TH1D* herr_total,
     latex.SetTextAlign(22); 
     latex.SetTextSize(0.03);
     std::vector<double> pt_bins = {75,118,183,277,415,657,1034,2011,4256};
-    for (int i = 1; i <= 8; ++i) {
+    for (int i = 3; i <= 8; ++i) {
         TLine* l = new TLine(150 * i, ymin , 150 * i, ymax);
         l->SetLineColor(kBlack);
         l->SetLineStyle(3);
@@ -924,7 +945,7 @@ void DrawTH1DPlots( TH1D* herr_total,
     
 
 
-    c->SaveAs("totalUnc_allBins_clean.pdf");
+    c->SaveAs("totalUnc_allBins_clean.png");
 }
 
 #endif
